@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RoBoost - Official App</title>
+
+  <link rel="icon" href="Logo.png" type="image/png" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0b0f1a;
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      position: relative;
+    }
+
+    .ascii-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 36px;
+      white-space: pre;
+      line-height: 1.2;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .logo-container {
+      width: 50px; 
+      height: 50px; 
+      border-radius: 1.5rem;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      position: absolute;
+      left: 35px;
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #00ffe1, #448aff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #cfd8ff;
+      text-align: center;
+    }
+
+    .download-btn {
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, #00ffe1, #448aff);
+      color: #0b0f1a;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .download-btn:hover {
+      opacity: 0.9;
+      transform: scale(1.05);
+    }
+
+    .info-section {
+      width: 100%;
+      max-width: 900px;
+      margin-top: 3rem;
+      padding: 2rem;
+      background: linear-gradient(145deg, #101626, #0d1322);
+      border-radius: 1.5rem;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+    }
+
+    .info-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(to right, #00ffe1, #448aff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .info-section p {
+      font-size: 1.1rem;
+      color: #ccd6f6;
+      line-height: 1.6;
+    }
+
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+
+      .tagline {
+        font-size: 1rem;
+      }
+
+      .download-btn {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+      }
+
+      .logo-container {
+        width: 100px;
+        height: 100px;
+      }
+    }
+
+    .ascii-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 36px;
+      white-space: pre;
+      line-height: 1.2;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="ascii-bg" class="ascii-bg"></div>
+
+  <div class="logo-container">
+    <img src="Logo.png" alt="RoBoost Logo" />
+  </div>
+
+  <h1>RoBoost</h1>
+  <p class="tagline">The #1 Roblox Customization Add-on</p>
+
+  <a href="https://mega.nz/folder/eUFQxZYL#Xj28WcTRypCP74G4kWj-Kw" class="download-btn">Download Now</a>
+
+  <div class="info-section">
+    <h2>What is RoBoost?</h2>
+    <p>
+      RoBoost is a powerful add-on for Roblox that allows users to personalize their Roblox experience like never before.
+      Customize your interface, themes, backgrounds, and more — all while staying fully integrated with the Roblox system.
+    </p>
+  </div>
+
+  <script>
+    const chars = ['@', '#', '*', '+', '=', '%', '&', '$', 'R', 'S', 'H', 'O', 'P', 'A', 'D', 'n', 'u', 'o'];
+    const random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    function createFallingLetter() {
+      const asciiBg = document.getElementById('ascii-bg');
+
+      const letter = document.createElement('span');
+      letter.textContent = chars[random(0, chars.length - 1)];
+      letter.style.position = 'absolute';
+      letter.style.top = `${random(-100, -50)}px`;
+      letter.style.left = `${random(0, window.innerWidth - 20)}px`;
+      letter.style.fontSize = `${random(24, 48)}px`;
+      letter.style.color = `rgba(255, 255, 255, 0.5)`;
+      letter.style.animation = `fall ${random(10, 25)}s linear infinite`;
+
+      asciiBg.appendChild(letter);
+    }
+
+    window.onload = () => {
+      setInterval(createFallingLetter, 100);
+    };
+  </script>
+
+</body>
+</html>
